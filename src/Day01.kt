@@ -32,7 +32,7 @@ fun main() {
                 (3 until 6).forEach { j ->
                     when {
                         i + j <= line.length -> {
-                            var key = (line.subSequence(i, i + j))
+                            var key = line.subSequence(i, i + j)
                             key = if (isReversed) key.reversed().toString() else key
                             when {
                                 numberMap.containsKey(key) -> return numberMap[key]!!
@@ -44,8 +44,16 @@ fun main() {
             return -1
         }
 
+        fun getFirstDigitMk2(line: String, isReversed: Boolean) =
+            line.mapIndexed { i, c ->
+                if (c.isDigit()) c.digitToInt()
+                else numberMap.filterKeys {
+                    k -> line.indexOf(if (isReversed) k.reversed() else k) == i
+                }.values.firstOrNull()
+            }.filterNotNull().first()
+
         fun getCalibrationValue(line: String): Int {
-            return getFirstDigit(line.reversed(), true) + getFirstDigit(line, false) * 10
+            return getFirstDigitMk2(line.reversed(), true) + getFirstDigitMk2(line, false) * 10
         }
 
         return input.sumOf(::getCalibrationValue)
